@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.mapper.GradeMapper">
+	<insert id="insertMajor" parameterType="java.util.List">
+		insert into Major(
+		major_id,
+		subj_id,
+		title,
+		member_id
+		)
+		values
+		<foreach collection="list" item="i" separator=",">
+			(
+			'${i.majorId}',
+			#{i.subjId},
+			#{i.title},
+			#{i.id}
+			)
+		</foreach>
+	</insert>
+	<select id="selectById" resultType="com.gms.web.grade.SubjectDTO">
+		select * from Grade where id = #{id}
+	</select>
+</mapper>

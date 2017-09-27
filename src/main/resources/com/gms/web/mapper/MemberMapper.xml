@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- public String insert(Map<?,?>map); public List<?> selectAll(CommandDTO 
+	cmd); public List<?> selectByName(CommandDTO cmd); public StudentDTO selectById(CommandDTO 
+	cmd); public String count(CommandDTO cmd); public String update(MemberDTO 
+	bean); public String delete(CommandDTO cmd); public MemberDTO login(CommandDTO 
+	cmd); -->
+
+
+<mapper namespace="com.gms.web.mapper.MemberMapper">
+	<insert id="insert" parameterType="com.gms.web.member.MemberDTO">
+		insert into member(member_id,name,password,ssn,regdate,phone,email,profile) 
+		values (#{id},#{name},#{password},#{ssn},now(),#{phone},#{email},#{profile});
+	</insert>
+	<select id="count" resultType="string">
+		select count(*) as count from member;
+	</select>
+	<select id="login" resultType="com.gms.web.member.MemberDTO"
+		parameterType="com.gms.web.command.CommandDTO">
+		SELECT member_id AS id,
+		name,password,ssn,regdate,phone,email,profile
+		FROM member WHERE member_id = #{search};
+	</select>
+	<select id="selectAll" resultType="com.gms.web.member.StudentDTO"
+		parameterType="com.gms.web.command.CommandDTO">
+		select t.*
+		from (select @RNUM := @RNUM +1 as NUM,s.*
+		from student s,(select @RNUM := 0)b)t
+		where t.NUM between #{startRow} and #{endRow};
+	</select>
+	<select id="selectByName" resultType="com.gms.web.member.StudentDTO"
+		parameterType="com.gms.web.command.CommandDTO">
+		select * from student where name like '%${search}%';
+	</select>
+	
+	<select id="selectById" resultType="com.gms.web.member.StudentDTO" parameterType="com.gms.web.command.CommandDTO">
+		select
+		id,name,password,ssn,regdate,phone,email,subjects
+		from student
+		where id like #{search};
+	</select>
+	
+	<update id="update" parameterType="com.gms.web.member.MemberDTO">
+	update member set phone = #{phone}, email=#{email}
+	where member_id = #{id};
+	</update>
+	
+	<delete id="delete" parameterType="com.gms.web.command.CommandDTO">
+		delete from member where member_id like #{search};
+	</delete>
+</mapper>
+
+
+<!-- <mapper namespace="com.gms.web.mapper.MemberMapper"> <insert id="insert"> 
+	<selectKey keyProperty="id" resultType="int" order="BEFORE"> <if test="_databaseId 
+	== 'oracle'"> select seq_users.nextval from dual </if> <if test="_databaseId 
+	== 'db2'"> select nextval for seq_users from sysibm.sysdummy1" </if> </selectKey> 
+	insert into users values (#{id}, #{name}) </insert> <select id="selectById" 
+	resultType="com.gms.web.member.MemberDTO"> select * from Member where id 
+	= #{id} </select> <select id="findActiveBlogWithTitleLike" resultType="Blog"> 
+	SELECT * FROM BLOG WHERE state = ‘ACTIVE’ <if test="title != null"> AND title 
+	like #{title} </if> </select> <select id="findActiveBlogLike" resultType="Blog"> 
+	SELECT * FROM BLOG WHERE state = ‘ACTIVE’ <if test="title != null"> AND title 
+	like #{title} </if> <if test="author != null and author.name != null"> AND 
+	author_name like #{author.name} </if> </select> <select id="findActiveBlogLike" 
+	resultType="Blog"> SELECT * FROM BLOG WHERE state = ‘ACTIVE’ <choose> <when 
+	test="title != null"> AND title like #{title} </when> <when test="author 
+	!= null and author.name != null"> AND author_name like #{author.name} </when> 
+	<otherwise> AND featured = 1 </otherwise> </choose> </select> <update id="updateAuthorIfNecessary"> 
+	update Author <set> <if test="username != null">username=#{username},</if> 
+	<if test="password != null">password=#{password},</if> <if test="email != 
+	null">email=#{email},</if> <if test="bio != null">bio=#{bio}</if> </set> 
+	where id=#{id} </update> <delete id=""></delete> -->
+
